@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class Level {
-    public static class LevelMapper extends Mapper<LongWritable, Text, Text, WeatherBean> {
+    public static class LevelMapper extends Mapper<LongWritable, Text, Text, LevelBean> {
         protected void map(LongWritable key, Text value, Context context)
                 throws IOException, InterruptedException{
             if (key.toString().equals("0")){return;}
@@ -30,19 +30,19 @@ public class Level {
                    String city = tokens[16];
                    if (year == 2019 && month == 2){
                        if (city.equals("北京")||city.equals("上海")||city.equals("成都")){
-                           context.write(new Text(city),new WeatherBean(id,day,hour,AQI));
+                           context.write(new Text(city),new LevelBean(id,day,hour,AQI));
                        }
                    }
         }
 
     }
-    public static class LevelReducer extends Reducer<Text, WeatherBean, Text, Text> {
-        protected void reduce(Text key, Iterable<WeatherBean> values , Context context)
+    public static class LevelReducer extends Reducer<Text, LevelBean, Text, Text> {
+        protected void reduce(Text key, Iterable<LevelBean> values , Context context)
                 throws IOException, InterruptedException {
             int level_1 = 0,level_2 = 0,level_3 = 0,level_4 = 0,level_5 = 0;
             HashMap<Integer,Integer>DayCounter = new HashMap<>();
             HashMap<Integer,Integer>DayAQI = new HashMap<>();
-            for (WeatherBean value:values){
+            for (LevelBean value:values){
                 DayCounter.merge(value.getDay(), 1, Integer::sum);
                 DayAQI.merge(value.getDay(), value.getAQI(), Integer::sum);
             }
@@ -74,7 +74,7 @@ public class Level {
         job.setReducerClass(LevelReducer.class);
 
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(WeatherBean.class);
+        job.setOutputValueClass(LevelBean.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(out,"task2"));

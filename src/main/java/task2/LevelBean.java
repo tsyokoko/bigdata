@@ -8,7 +8,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class WeatherBean  implements Writable{
+public class LevelBean implements Writable{
 
     public void setStationNum(int StationNum){
         this.StationNum = StationNum;
@@ -25,8 +25,8 @@ public class WeatherBean  implements Writable{
     public void setAQI(int AQI){this.AQI = AQI;}
     public int getAQI(){return AQI;}
 
-    public WeatherBean(){}
-    public WeatherBean( int StationNum, int day, int hour,int AQI){
+    public LevelBean(){}
+    public LevelBean(int StationNum, int day, int hour, int AQI){
         super();
         setStationNum(StationNum);
         setDay(day);
